@@ -80,7 +80,7 @@ public enum Value: Equatable, CustomStringConvertible {
     }
 }
 
-func parseInt64(_ s: string) -> int64? {
+package func parseInt64(_ s: string) -> int64? {
     if s.isEmpty { return nil }
     var neg = false
     var i = 0
@@ -102,7 +102,7 @@ func parseInt64(_ s: string) -> int64? {
     return neg ? -res : res
 }
 
-func parseFloat64(_ s: string) -> float64? {
+package func parseFloat64(_ s: string) -> float64? {
     if s.isEmpty { return nil }
     var neg = false
     var i = 0
