@@ -1,7 +1,9 @@
 package mysql
 
-import "net/tcp"
-import "db/sql"
+import (
+    "db/sql"
+    "net/tcp"
+)
 
 public class MySqlClient {
     var stream: tcp.TcpStream?

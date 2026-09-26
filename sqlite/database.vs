@@ -1,7 +1,9 @@
 package sqlite
 
-import "db/sql"
-import "fs"
+import (
+    "db/sql"
+    "fs"
+)
 
 public class Database {
     public var path: string

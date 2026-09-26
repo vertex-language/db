@@ -1,11 +1,13 @@
 package main
 
-import "db/sql"
-import "db/sqlite"
-import "db/redis"
-import "db/postgres"
-import "db/mysql"
-import "fs"
+import (
+    "db/mysql"
+    "db/postgres"
+    "db/redis"
+    "db/sql"
+    "db/sqlite"
+    "fs"
+)
 
 var failures: int32 = 0
 

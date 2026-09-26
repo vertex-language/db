@@ -1,7 +1,9 @@
 package postgres
 
-import "net/tcp"
-import "db/sql"
+import (
+    "db/sql"
+    "net/tcp"
+)
 
 public class PgClient {
     var stream: tcp.TcpStream?

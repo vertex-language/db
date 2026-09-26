@@ -21,10 +21,10 @@ Database drivers, embedded SQL storage engine, and database wire protocols.
 
 ## Quick Start
 
-Run any entry point with:
+Run the database test suite in `cmd/` directly with `vsc run`:
 
 ```bash
-vsc run main.vs
+vsc run check
 ```
 
 ---
