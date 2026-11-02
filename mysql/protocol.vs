@@ -2,7 +2,7 @@ package mysql
 
 import "db/sql"
 
-func sliceBytes(_ data: [uint8], from: int, to: int) -> [uint8] {
+func sliceBytes(data: [uint8], from: int, to: int) -> [uint8] {
     if from >= to || from >= data.count { return [] }
     let end = to < data.count ? to : data.count
     var res = [uint8](repeating: 0, count: end - from)
@@ -16,7 +16,7 @@ func sliceBytes(_ data: [uint8], from: int, to: int) -> [uint8] {
     return res
 }
 
-func writeInt24LE(_ val: int) -> [uint8] {
+func writeInt24LE(val: int) -> [uint8] {
     return [
         uint8(val & 0xFF),
         uint8((val >> 8) & 0xFF),
@@ -24,14 +24,14 @@ func writeInt24LE(_ val: int) -> [uint8] {
     ]
 }
 
-func readInt24LE(_ bytes: [uint8], from: int) -> int {
+func readInt24LE(bytes: [uint8], from: int) -> int {
     let b0 = int(bytes[from])
     let b1 = int(bytes[from + 1])
     let b2 = int(bytes[from + 2])
     return b0 | (b1 << 8) | (b2 << 16)
 }
 
-func writeInt32LE(_ val: uint32) -> [uint8] {
+func writeInt32LE(val: uint32) -> [uint8] {
     return [
         uint8(val & 0xFF),
         uint8((val >> 8) & 0xFF),
@@ -40,7 +40,7 @@ func writeInt32LE(_ val: uint32) -> [uint8] {
     ]
 }
 
-func readInt32LE(_ bytes: [uint8], from: int) -> uint32 {
+func readInt32LE(bytes: [uint8], from: int) -> uint32 {
     let b0 = uint32(bytes[from])
     let b1 = uint32(bytes[from + 1])
     let b2 = uint32(bytes[from + 2])
@@ -48,7 +48,7 @@ func readInt32LE(_ bytes: [uint8], from: int) -> uint32 {
     return b0 | (b1 << 8) | (b2 << 16) | (b3 << 24)
 }
 
-func readInt16LE(_ bytes: [uint8], from: int) -> uint16 {
+func readInt16LE(bytes: [uint8], from: int) -> uint16 {
     let b0 = uint16(bytes[from])
     let b1 = uint16(bytes[from + 1])
     return b0 | (b1 << 8)
@@ -115,20 +115,20 @@ public class MySqlProtocol {
         return encodePacket(payload: body, seq: seq)
     }
 
-    public static func encodeQuery(_ sql: string, seq: uint8 = 0) -> [uint8] {
+    public static func encodeQuery(sql: string, seq: uint8 = 0) -> [uint8] {
         var body: [uint8] = [0x03] // COM_QUERY
         body.append(contentsOf: [uint8](sql.utf8))
         return encodePacket(payload: body, seq: seq)
     }
 
-    public static func decodeOkPacket(_ payload: [uint8]) -> (affectedRows: int64, lastInsertId: int64) {
+    public static func decodeOkPacket(payload: [uint8]) -> (affectedRows: int64, lastInsertId: int64) {
         var offset = 1 // skip 0x00 header
         let affected = readLenEncInt(payload, from: &offset) ?? 0
         let lastId = readLenEncInt(payload, from: &offset) ?? 0
         return (affectedRows: affected, lastInsertId: lastId)
     }
 
-    public static func decodeErrPacket(_ payload: [uint8]) -> string {
+    public static func decodeErrPacket(payload: [uint8]) -> string {
         if payload.count < 3 { return "unknown MySQL error" }
         let errCode = readInt16LE(payload, from: 1)
         var offset = 3
@@ -143,7 +143,7 @@ public class MySqlProtocol {
         return "MySQL error \(errCode): \(msg)"
     }
 
-    public static func decodeColumnDefinition(_ payload: [uint8]) -> MySqlColumnDesc {
+    public static func decodeColumnDefinition(payload: [uint8]) -> MySqlColumnDesc {
         var offset = 0
         _ = readLenEncString(payload, from: &offset) // catalog
         let schema = readLenEncString(payload, from: &offset) ?? ""
@@ -162,7 +162,7 @@ public class MySqlProtocol {
         return MySqlColumnDesc(schema: schema, table: table, name: name, columnType: colType)
     }
 
-    public static func decodeRowData(_ payload: [uint8], columns: [MySqlColumnDesc]) -> sql.Row {
+    public static func decodeRowData(payload: [uint8], columns: [MySqlColumnDesc]) -> sql.Row {
         var offset = 0
         var colNames: [string] = []
         var vals: [sql.Value] = []
@@ -190,7 +190,7 @@ public class MySqlProtocol {
     }
 }
 
-func readLenEncInt(_ bytes: [uint8], from: inout int) -> int64? {
+func readLenEncInt(bytes: [uint8], from: inout int) -> int64? {
     if from >= bytes.count { return nil }
     let b = bytes[from]
     from += 1
@@ -228,7 +228,7 @@ func readLenEncInt(_ bytes: [uint8], from: inout int) -> int64? {
     return nil
 }
 
-func readLenEncString(_ bytes: [uint8], from: inout int) -> string? {
+func readLenEncString(bytes: [uint8], from: inout int) -> string? {
     guard let len = readLenEncInt(bytes, from: &from) else {
         return nil
     }

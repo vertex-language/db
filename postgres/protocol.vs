@@ -2,7 +2,7 @@ package postgres
 
 import "db/sql"
 
-func sliceBytes(_ data: [uint8], from: int, to: int) -> [uint8] {
+func sliceBytes(data: [uint8], from: int, to: int) -> [uint8] {
     if from >= to || from >= data.count { return [] }
     let end = to < data.count ? to : data.count
     var res = [uint8](repeating: 0, count: end - from)
@@ -16,7 +16,7 @@ func sliceBytes(_ data: [uint8], from: int, to: int) -> [uint8] {
     return res
 }
 
-func writeInt32BE(_ val: int32) -> [uint8] {
+func writeInt32BE(val: int32) -> [uint8] {
     let u = uint32(bitPattern: val)
     return [
         uint8((u >> 24) & 0xFF),
@@ -26,7 +26,7 @@ func writeInt32BE(_ val: int32) -> [uint8] {
     ]
 }
 
-func readInt32BE(_ bytes: [uint8], from: int) -> int32 {
+func readInt32BE(bytes: [uint8], from: int) -> int32 {
     let b0 = uint32(bytes[from])
     let b1 = uint32(bytes[from + 1])
     let b2 = uint32(bytes[from + 2])
@@ -35,7 +35,7 @@ func readInt32BE(_ bytes: [uint8], from: int) -> int32 {
     return int32(bitPattern: u)
 }
 
-func writeInt16BE(_ val: int16) -> [uint8] {
+func writeInt16BE(val: int16) -> [uint8] {
     let u = uint16(bitPattern: val)
     return [
         uint8((u >> 8) & 0xFF),
@@ -43,7 +43,7 @@ func writeInt16BE(_ val: int16) -> [uint8] {
     ]
 }
 
-func readInt16BE(_ bytes: [uint8], from: int) -> int16 {
+func readInt16BE(bytes: [uint8], from: int) -> int16 {
     let b0 = uint16(bytes[from])
     let b1 = uint16(bytes[from + 1])
     let u = (b0 << 8) | b1
@@ -107,7 +107,7 @@ public class PgProtocol {
         return msg
     }
 
-    public static func encodePassword(_ password: string) -> [uint8] {
+    public static func encodePassword(password: string) -> [uint8] {
         var body = [uint8](password.utf8)
         body.append(0x00)
         let length = int32(body.count + 4)
@@ -117,7 +117,7 @@ public class PgProtocol {
         return msg
     }
 
-    public static func encodeQuery(_ sql: string) -> [uint8] {
+    public static func encodeQuery(sql: string) -> [uint8] {
         var body = [uint8](sql.utf8)
         body.append(0x00)
         let length = int32(body.count + 4)
@@ -133,7 +133,7 @@ public class PgProtocol {
         return msg
     }
 
-    public static func decodeRowDescription(_ payload: [uint8]) throws -> [PgColumnDesc] {
+    public static func decodeRowDescription(payload: [uint8]) throws -> [PgColumnDesc] {
         if payload.count < 2 {
             throw sql.DbError.protocolError("invalid RowDescription packet")
         }
@@ -176,7 +176,7 @@ public class PgProtocol {
         return cols
     }
 
-    public static func decodeDataRow(_ payload: [uint8], columns: [PgColumnDesc]) throws -> sql.Row {
+    public static func decodeDataRow(payload: [uint8], columns: [PgColumnDesc]) throws -> sql.Row {
         if payload.count < 2 {
             throw sql.DbError.protocolError("invalid DataRow packet")
         }
@@ -228,7 +228,7 @@ public class PgProtocol {
         return sql.Row(columns: colNames, values: vals)
     }
 
-func splitSpaces(_ s: string) -> [string] {
+func splitSpaces(s: string) -> [string] {
     var parts: [string] = []
     var cur = ""
     for b in s.utf8 {
@@ -247,7 +247,7 @@ func splitSpaces(_ s: string) -> [string] {
     return parts
 }
 
-func parseInteger(_ s: string) -> int64? {
+func parseInteger(s: string) -> int64? {
     let b = [uint8](s.utf8)
     if b.isEmpty { return nil }
     var neg = false
@@ -270,7 +270,7 @@ func parseInteger(_ s: string) -> int64? {
     return neg ? -n : n
 }
 
-    public static func decodeCommandComplete(_ payload: [uint8]) -> (tag: string, affected: int64) {
+    public static func decodeCommandComplete(payload: [uint8]) -> (tag: string, affected: int64) {
         var s = ""
         var i = 0
         while i < payload.count && payload[i] != 0x00 {
@@ -288,7 +288,7 @@ func parseInteger(_ s: string) -> int64? {
         return (tag: s, affected: affected)
     }
 
-    public static func decodeErrorResponse(_ payload: [uint8]) -> string {
+    public static func decodeErrorResponse(payload: [uint8]) -> string {
         var msg = ""
         var offset = 0
         while offset < payload.count && payload[offset] != 0x00 {

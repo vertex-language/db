@@ -19,7 +19,7 @@ public enum DataType: Equatable, CustomStringConvertible {
         }
     }
 
-    public static func parse(_ s: string) -> DataType {
+    public static func parse(s: string) -> DataType {
         let upper = s.uppercased()
         if upper.contains("INT") { return .integer }
         if upper.contains("CHAR") || upper.contains("TEXT") || upper.contains("CLOB") || upper.contains("VARCHAR") {
@@ -78,7 +78,7 @@ public class Table {
         }
     }
 
-    public func columnIndex(_ colName: string) -> int? {
+    public func columnIndex(colName: string) -> int? {
         let lower = colName.lowercased()
         var i = 0
         while i < self.columns.count {

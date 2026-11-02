@@ -4,7 +4,7 @@ import "db/sql"
 
 public class Engine {
     public static func execute(
-        _ stmt: Statement,
+        stmt: Statement,
         db: Database,
         params: [sql.Value]
     ) throws -> (result: sql.Result?, rows: sql.Rows?) {
@@ -282,7 +282,7 @@ public class Engine {
     }
 
     static func executeAggregate(
-        _ columns: [SelectColumn],
+        columns: [SelectColumn],
         matchedRows: [[sql.Value]],
         table: Table
     ) throws -> sql.Rows {
@@ -371,7 +371,7 @@ public class Engine {
     }
 }
 
-func rowsEqual(_ a: [sql.Value], _ b: [sql.Value]) -> bool {
+func rowsEqual(a: [sql.Value], b: [sql.Value]) -> bool {
     if a.count != b.count { return false }
     var i = 0
     while i < a.count {
@@ -381,7 +381,7 @@ func rowsEqual(_ a: [sql.Value], _ b: [sql.Value]) -> bool {
     return true
 }
 
-func sortRows(_ rows: [[sql.Value]], colIdx: int, desc: bool) -> [[sql.Value]] {
+func sortRows(rows: [[sql.Value]], colIdx: int, desc: bool) -> [[sql.Value]] {
     var sorted = rows
     var i = 0
     while i < sorted.count {

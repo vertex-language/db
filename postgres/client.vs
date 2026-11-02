@@ -101,7 +101,7 @@ public class PgClient {
         return (type: msgType, payload: payload)
     }
 
-    public func exec(_ sqlStr: string) async throws -> sql.Result {
+    public func exec(sqlStr: string) async throws -> sql.Result {
         if self.isMock {
             return sql.Result(rowsAffected: 1, lastInsertId: 1)
         }
@@ -131,7 +131,7 @@ public class PgClient {
         return sql.Result(rowsAffected: totalAffected, lastInsertId: 0)
     }
 
-    public func query(_ sqlStr: string) async throws -> sql.Rows {
+    public func query(sqlStr: string) async throws -> sql.Rows {
         if self.isMock {
             let cols = self.mockCols["users"] ?? ["id", "name"]
             let rawRows = self.mockData["users"] ?? []
@@ -178,7 +178,7 @@ public class PgClient {
         return sql.Rows(columns: colNames, records: records)
     }
 
-    public func queryRow(_ sqlStr: string) async throws -> sql.Row? {
+    public func queryRow(sqlStr: string) async throws -> sql.Row? {
         let rows = try await self.query(sqlStr)
         if rows.next() {
             return rows.current()

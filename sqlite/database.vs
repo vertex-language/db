@@ -11,7 +11,7 @@ public class Database {
     public var inTransaction: bool
     var txSnapshot: [string: Table]?
 
-    public static func open(_ path: string = ":memory:") throws -> Database {
+    public static func open(path: string = ":memory:") throws -> Database {
         return try Database(path: path)
     }
 
@@ -23,11 +23,11 @@ public class Database {
         try self.load()
     }
 
-    public func getTable(_ name: string) -> Table? {
+    public func getTable(name: string) -> Table? {
         return self.tables[name.lowercased()]
     }
 
-    public func exec(_ sqlStr: string, params: [sql.Value] = []) throws -> sql.Result {
+    public func exec(sqlStr: string, params: [sql.Value] = []) throws -> sql.Result {
         let stmts = splitStatements(sqlStr)
         var lastRes = sql.Result(rowsAffected: 0)
         for s in stmts {
@@ -43,14 +43,14 @@ public class Database {
         return lastRes
     }
 
-    public func query(_ sqlStr: string, params: [sql.Value] = []) throws -> sql.Rows {
+    public func query(sqlStr: string, params: [sql.Value] = []) throws -> sql.Rows {
         let parser = Parser(sql: sqlStr)
         let stmt = try parser.parse()
         let (_, rows) = try Engine.execute(stmt, db: self, params: params)
         return rows ?? sql.Rows(columns: [], records: [])
     }
 
-    public func queryRow(_ sqlStr: string, params: [sql.Value] = []) throws -> sql.Row? {
+    public func queryRow(sqlStr: string, params: [sql.Value] = []) throws -> sql.Row? {
         let rows = try self.query(sqlStr, params: params)
         if rows.next() {
             return rows.current()
@@ -136,7 +136,7 @@ public class Database {
         return out
     }
 
-    func deserialize(_ content: string) throws {
+    func deserialize(content: string) throws {
         let lines = splitLines(content)
         var i = 0
         if lines.isEmpty || lines[0] != "VTXSQL1" {
@@ -205,7 +205,7 @@ public class Database {
     }
 }
 
-func serializeValue(_ v: sql.Value) -> string {
+func serializeValue(v: sql.Value) -> string {
     switch v {
     case .null:
         return "N"
@@ -222,7 +222,7 @@ func serializeValue(_ v: sql.Value) -> string {
     }
 }
 
-func deserializeValue(_ s: string) -> sql.Value {
+func deserializeValue(s: string) -> sql.Value {
     if s == "N" { return .null }
     if s.hasPrefix("I:") {
         let numStr = string(s.dropFirst(2))
@@ -252,7 +252,7 @@ func deserializeValue(_ s: string) -> sql.Value {
     return .null
 }
 
-func splitByTab(_ s: string) -> [string] {
+func splitByTab(s: string) -> [string] {
     var parts: [string] = []
     var cur = ""
     for b in s.utf8 {
@@ -267,7 +267,7 @@ func splitByTab(_ s: string) -> [string] {
     return parts
 }
 
-func splitLines(_ s: string) -> [string] {
+func splitLines(s: string) -> [string] {
     var lines: [string] = []
     var cur = ""
     for b in s.utf8 {
@@ -284,7 +284,7 @@ func splitLines(_ s: string) -> [string] {
     return lines
 }
 
-func splitStatements(_ sql: string) -> [string] {
+func splitStatements(sql: string) -> [string] {
     var stmts: [string] = []
     var cur = ""
     var inQuotes = false
@@ -313,7 +313,7 @@ func splitStatements(_ sql: string) -> [string] {
     return stmts
 }
 
-func trimString(_ s: string) -> string {
+func trimString(s: string) -> string {
     let bytes = [uint8](s.utf8)
     if bytes.isEmpty { return "" }
     var st = 0
@@ -333,7 +333,7 @@ func trimString(_ s: string) -> string {
     return result
 }
 
-func toHex(_ bytes: [uint8]) -> string {
+func toHex(bytes: [uint8]) -> string {
     let hexDigits: [Character] = ["0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f"]
     var s = ""
     for b in bytes {
@@ -345,7 +345,7 @@ func toHex(_ bytes: [uint8]) -> string {
     return s
 }
 
-func fromHex(_ s: string) -> [uint8] {
+func fromHex(s: string) -> [uint8] {
     let b = [uint8](s.utf8)
     var out: [uint8] = []
     var i = 0
@@ -358,7 +358,7 @@ func fromHex(_ s: string) -> [uint8] {
     return out
 }
 
-func hexVal(_ b: uint8) -> int {
+func hexVal(b: uint8) -> int {
     if b >= 48 && b <= 57 { return int(b - 48) }
     if b >= 97 && b <= 102 { return int(b - 97 + 10) }
     if b >= 65 && b <= 70 { return int(b - 65 + 10) }

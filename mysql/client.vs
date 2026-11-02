@@ -90,7 +90,7 @@ public class MySqlClient {
         return (seq: seq, payload: payload)
     }
 
-    public func exec(_ sqlStr: string) async throws -> sql.Result {
+    public func exec(sqlStr: string) async throws -> sql.Result {
         if self.isMock {
             return sql.Result(rowsAffected: 1, lastInsertId: 1)
         }
@@ -118,7 +118,7 @@ public class MySqlClient {
         return sql.Result(rowsAffected: 0, lastInsertId: 0)
     }
 
-    public func query(_ sqlStr: string) async throws -> sql.Rows {
+    public func query(sqlStr: string) async throws -> sql.Rows {
         if self.isMock {
             let cols = self.mockCols["products"] ?? ["id", "title"]
             let rawRows = self.mockData["products"] ?? []
@@ -187,7 +187,7 @@ public class MySqlClient {
         return sql.Rows(columns: colNames, records: records)
     }
 
-    public func queryRow(_ sqlStr: string) async throws -> sql.Row? {
+    public func queryRow(sqlStr: string) async throws -> sql.Row? {
         let rows = try await self.query(sqlStr)
         if rows.next() {
             return rows.current()

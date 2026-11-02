@@ -70,7 +70,7 @@ public class Parser {
         return tok
     }
 
-    func match(_ expectedUpper: string) -> bool {
+    func match(expectedUpper: string) -> bool {
         if let p = self.peek() {
             if p.uppercased() == expectedUpper {
                 self.pos += 1
@@ -80,7 +80,7 @@ public class Parser {
         return false
     }
 
-    func expect(_ expectedUpper: string) throws {
+    func expect(expectedUpper: string) throws {
         guard self.match(expectedUpper) else {
             let got = self.peek() ?? "EOF"
             throw sql.DbError.syntaxError("expected '\(expectedUpper)', got '\(got)'")
@@ -531,7 +531,7 @@ public class Parser {
     }
 }
 
-func parseLiteralToken(_ tok: string) -> sql.Value {
+func parseLiteralToken(tok: string) -> sql.Value {
     if tok.hasPrefix("'") && tok.hasSuffix("'") && tok.count >= 2 {
         return .text(string(tok.dropFirst(1).dropLast(1)))
     }
@@ -544,7 +544,7 @@ func parseLiteralToken(_ tok: string) -> sql.Value {
     return .text(tok)
 }
 
-func tokenize(_ s: string) -> [string] {
+func tokenize(s: string) -> [string] {
     var tokens: [string] = []
     let bytes = [uint8](s.utf8)
     var i = 0

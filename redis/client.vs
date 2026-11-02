@@ -38,7 +38,7 @@ public class RedisClient {
         }
     }
 
-    public func sendCommand(_ args: [string]) async throws -> RespValue {
+    public func sendCommand(args: [string]) async throws -> RespValue {
         if self.isMemory {
             return self.executeMemory(args)
         }
@@ -64,7 +64,7 @@ public class RedisClient {
         }
     }
 
-    func executeMemory(_ args: [string]) -> RespValue {
+    func executeMemory(args: [string]) -> RespValue {
         if args.isEmpty {
             return .error("empty command")
         }
@@ -273,24 +273,24 @@ public class RedisClient {
     }
 
     // High-level API
-    public func ping(_ msg: string? = nil) async throws -> string {
+    public func ping(msg: string? = nil) async throws -> string {
         var args = ["PING"]
         if let m = msg { args.append(m) }
         let res = try await self.sendCommand(args)
         return res.asString() ?? "PONG"
     }
 
-    public func get(_ key: string) async throws -> string? {
+    public func get(key: string) async throws -> string? {
         let res = try await self.sendCommand(["GET", key])
         return res.asString()
     }
 
-    public func set(_ key: string, _ value: string) async throws -> bool {
+    public func set(key: string, value: string) async throws -> bool {
         let res = try await self.sendCommand(["SET", key, value])
         return res.asString() == "OK"
     }
 
-    public func del(_ keys: [string]) async throws -> int64 {
+    public func del(keys: [string]) async throws -> int64 {
         if keys.isEmpty { return 0 }
         var args = ["DEL"]
         args.append(contentsOf: keys)
@@ -298,32 +298,32 @@ public class RedisClient {
         return res.asInt() ?? 0
     }
 
-    public func exists(_ key: string) async throws -> bool {
+    public func exists(key: string) async throws -> bool {
         let res = try await self.sendCommand(["EXISTS", key])
         return (res.asInt() ?? 0) > 0
     }
 
-    public func incr(_ key: string) async throws -> int64 {
+    public func incr(key: string) async throws -> int64 {
         let res = try await self.sendCommand(["INCR", key])
         return res.asInt() ?? 0
     }
 
-    public func decr(_ key: string) async throws -> int64 {
+    public func decr(key: string) async throws -> int64 {
         let res = try await self.sendCommand(["DECR", key])
         return res.asInt() ?? 0
     }
 
-    public func hset(_ key: string, _ field: string, _ value: string) async throws -> int64 {
+    public func hset(key: string, field: string, value: string) async throws -> int64 {
         let res = try await self.sendCommand(["HSET", key, field, value])
         return res.asInt() ?? 0
     }
 
-    public func hget(_ key: string, _ field: string) async throws -> string? {
+    public func hget(key: string, field: string) async throws -> string? {
         let res = try await self.sendCommand(["HGET", key, field])
         return res.asString()
     }
 
-    public func hgetall(_ key: string) async throws -> [string: string] {
+    public func hgetall(key: string) async throws -> [string: string] {
         let res = try await self.sendCommand(["HGETALL", key])
         var map: [string: string] = [:]
         switch res {
@@ -343,7 +343,7 @@ public class RedisClient {
         return map
     }
 
-    public func hdel(_ key: string, _ fields: [string]) async throws -> int64 {
+    public func hdel(key: string, fields: [string]) async throws -> int64 {
         if fields.isEmpty { return 0 }
         var args = ["HDEL", key]
         args.append(contentsOf: fields)
@@ -351,7 +351,7 @@ public class RedisClient {
         return res.asInt() ?? 0
     }
 
-    public func lpush(_ key: string, _ values: [string]) async throws -> int64 {
+    public func lpush(key: string, values: [string]) async throws -> int64 {
         if values.isEmpty { return 0 }
         var args = ["LPUSH", key]
         args.append(contentsOf: values)
@@ -359,7 +359,7 @@ public class RedisClient {
         return res.asInt() ?? 0
     }
 
-    public func rpush(_ key: string, _ values: [string]) async throws -> int64 {
+    public func rpush(key: string, values: [string]) async throws -> int64 {
         if values.isEmpty { return 0 }
         var args = ["RPUSH", key]
         args.append(contentsOf: values)
@@ -367,17 +367,17 @@ public class RedisClient {
         return res.asInt() ?? 0
     }
 
-    public func lpop(_ key: string) async throws -> string? {
+    public func lpop(key: string) async throws -> string? {
         let res = try await self.sendCommand(["LPOP", key])
         return res.asString()
     }
 
-    public func rpop(_ key: string) async throws -> string? {
+    public func rpop(key: string) async throws -> string? {
         let res = try await self.sendCommand(["RPOP", key])
         return res.asString()
     }
 
-    public func lrange(_ key: string, start: int, stop: int) async throws -> [string] {
+    public func lrange(key: string, start: int, stop: int) async throws -> [string] {
         let res = try await self.sendCommand(["LRANGE", key, string(start), string(stop)])
         var items: [string] = []
         switch res {
@@ -395,7 +395,7 @@ public class RedisClient {
         return items
     }
 
-    public func llen(_ key: string) async throws -> int64 {
+    public func llen(key: string) async throws -> int64 {
         let res = try await self.sendCommand(["LLEN", key])
         return res.asInt() ?? 0
     }

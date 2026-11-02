@@ -10,7 +10,7 @@ public struct Row {
         self.values = values
     }
 
-    public func get(_ colName: string) -> Value? {
+    public func get(colName: string) -> Value? {
         var i = 0
         while i < self.columns.count {
             if self.columns[i] == colName {
@@ -23,27 +23,27 @@ public struct Row {
         return nil
     }
 
-    public func string(_ colName: string) -> string? {
+    public func string(colName: string) -> string? {
         return self.get(colName)?.asString()
     }
 
-    public func int(_ colName: string) -> int64? {
+    public func int(colName: string) -> int64? {
         return self.get(colName)?.asInt()
     }
 
-    public func float(_ colName: string) -> float64? {
+    public func float(colName: string) -> float64? {
         return self.get(colName)?.asFloat()
     }
 
-    public func bool(_ colName: string) -> bool? {
+    public func bool(colName: string) -> bool? {
         return self.get(colName)?.asBool()
     }
 
-    public func blob(_ colName: string) -> [uint8]? {
+    public func blob(colName: string) -> [uint8]? {
         return self.get(colName)?.asBlob()
     }
 
-    public func at(_ index: int) -> Value? {
+    public func at(index: int) -> Value? {
         if index >= 0 && index < self.values.count {
             return self.values[index]
         }

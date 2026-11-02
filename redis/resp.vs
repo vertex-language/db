@@ -1,6 +1,6 @@
 package redis
 
-func sliceBytes(_ data: [uint8], from: int, to: int) -> [uint8] {
+func sliceBytes(data: [uint8], from: int, to: int) -> [uint8] {
     if from >= to || from >= data.count { return [] }
     let end = to < data.count ? to : data.count
     var res = [uint8](repeating: 0, count: end - from)
@@ -78,7 +78,7 @@ public enum RespValue: Equatable, CustomStringConvertible {
 }
 
 public class RespSerializer {
-    public static func encodeCommand(_ args: [string]) -> [uint8] {
+    public static func encodeCommand(args: [string]) -> [uint8] {
         var out = "*\(args.count)\r\n"
         for arg in args {
             let bytes = [uint8](arg.utf8)
@@ -89,7 +89,7 @@ public class RespSerializer {
         return [uint8](out.utf8)
     }
 
-    public static func encodeValue(_ val: RespValue) -> [uint8] {
+    public static func encodeValue(val: RespValue) -> [uint8] {
         switch val {
         case .simpleString(let s):
             return [uint8]("+".utf8) + [uint8](s.utf8) + [0x0D, 0x0A]
@@ -128,7 +128,7 @@ public class RespParser {
         self.pos = 0
     }
 
-    public func feed(_ data: [uint8]) {
+    public func feed(data: [uint8]) {
         self.buffer.append(contentsOf: data)
     }
 
